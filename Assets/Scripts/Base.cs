@@ -46,11 +46,8 @@ public class Base : MonoBehaviour
         {
             for (int i = 0; i < _bots.Length; i++)
             {
-            Debug.Log("Box is find");
                 if (_bots[i].IsBusy == false && _scanner.Target.IsTaken == false)
                 {
-                    Debug.Log(_bots[i].name);
-                    Debug.Log(_bots[i].IsBusy);
                     _bots[i].SetTarget(_scanner.Target);
                     _bots[i].SetEmployment();
                     _scanner.Target.ChangeState();
