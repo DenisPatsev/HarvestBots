@@ -13,7 +13,6 @@ public class Bot : MonoBehaviour
 
     public BotMover Mover => _mover;
 
-
     public event UnityAction BotIsBack;
 
     private void OnEnable()
