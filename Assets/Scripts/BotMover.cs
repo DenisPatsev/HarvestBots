@@ -42,7 +42,6 @@ public class BotMover : MonoBehaviour
 
     private IEnumerator MoveToTarget()
     {
-        Debug.Log("Start");
         _animator.SetBool(Walk, true);
         transform.rotation = Quaternion.LookRotation(transform.position - _target.transform.position);
         _isWalking = true;
