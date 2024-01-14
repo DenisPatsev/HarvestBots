@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -19,12 +17,12 @@ public class BoxScore : MonoBehaviour
 
     private void OnEnable()
     {
-        _base.AddScore += AddScore;
+        _base.BoxAdded += AddScore;
     }
 
     private void OnDisable()
     {
-        _base.AddScore -= AddScore;
+        _base.BoxAdded -= AddScore;
     }
 
     private void AddScore()

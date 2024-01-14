@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
 
@@ -9,17 +10,19 @@ public class BotMover : MonoBehaviour
     private const string Walk = "Walking";
 
     [SerializeField] private float _speed;
-    [SerializeField] private Raycaster _raycaster;
     [SerializeField] private float _dropForce;
-    [SerializeField] private Scanner _scanner;
+    [SerializeField] private Raycaster _raycaster;
     [SerializeField] private Boxplace _boxplace;
+    [SerializeField] private Base _base;
+    [SerializeField] private Bot _bot;
 
-    private Box _box;
+    private Box _target;
     private Vector3 _startPosition;
     private Animator _animator;
     private bool _isWalking;
-    private bool _isBusy;
-    private bool _isFound;
+    private bool _isBoxFound;
+
+    public event UnityAction BoxIsBrought;
 
     private void Awake()
     {
@@ -29,37 +32,24 @@ public class BotMover : MonoBehaviour
     private void Start()
     {
         _startPosition = transform.position;
-        _isBusy = false;
-        _isFound = false;
+        _isBoxFound = false;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (_isBusy == false && _scanner.Target.IsTaken == false)
-            {
-                _box = _scanner.Target;
-                _box.BeTaken();
-                _isBusy = true;
-
-                Stop();
-                StartCoroutine(MoveToTarget());
-            }
-        }
-
         CheckBoxForward();
     }
 
     private IEnumerator MoveToTarget()
     {
+        Debug.Log("Start");
         _animator.SetBool(Walk, true);
-        transform.rotation = Quaternion.LookRotation(transform.position - _box.transform.position);
+        transform.rotation = Quaternion.LookRotation(transform.position - _target.transform.position);
         _isWalking = true;
 
         while (_isWalking == true)
         {
-            transform.position = Vector3.MoveTowards(transform.position, _box.transform.position, _speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
     }
@@ -77,25 +67,25 @@ public class BotMover : MonoBehaviour
         _animator.SetBool(Walk, false);
 
         DropBox();
-        _isBusy = false;
+        BoxIsBrought?.Invoke();
     }
 
     private void TakeBox()
     {
-        _box.transform.SetParent(transform, worldPositionStays: true);
-        _box.transform.position = _boxplace.transform.position;
-        _box.transform.rotation = transform.rotation;
-        _box.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        _target.transform.SetParent(transform, worldPositionStays: true);
+        _target.transform.position = _boxplace.transform.position;
+        _target.transform.rotation = transform.rotation;
+        _target.gameObject.GetComponent<Rigidbody>().isKinematic = true;
     }
 
     private void DropBox()
     {
-        Rigidbody rigidbody = _box.GetComponent<Rigidbody>();
+        Rigidbody rigidbody = _target.GetComponent<Rigidbody>();
 
-        _box.transform.parent = null;
+        _target.transform.parent = null;
         rigidbody.isKinematic = false;
-        rigidbody.AddForce(_box.transform.forward * _dropForce * -1, ForceMode.Force);
-        _isFound = false;
+        rigidbody.AddForce(_target.transform.forward * _dropForce * -1, ForceMode.Force);
+        _isBoxFound = false;
     }
 
     private void CheckBoxForward()
@@ -105,9 +95,9 @@ public class BotMover : MonoBehaviour
 
         if (Physics.Raycast(_raycaster.transform.position, transform.forward * -1, out hit, distance))
         {
-            if (hit.collider.gameObject.TryGetComponent(out Box box) && _isFound == false)
+            if (hit.collider.gameObject.TryGetComponent(out Box box) && _isBoxFound == false)
             {
-                _isFound = true;
+                _isBoxFound = true;
                 Stop();
                 TakeBox();
                 StartCoroutine(MoveBack());
@@ -118,5 +108,12 @@ public class BotMover : MonoBehaviour
     private void Stop()
     {
         _isWalking = false;
+    }
+
+    public void Go()
+    {
+        _target = _bot.Target;
+        Stop();
+        StartCoroutine(MoveToTarget());
     }
 }

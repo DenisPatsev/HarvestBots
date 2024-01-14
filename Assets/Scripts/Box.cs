@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Box : MonoBehaviour
 {
-    private bool _isTaked;
+    private bool _isTaken;
 
-    public bool IsTaken => _isTaked;
+    public bool IsTaken => _isTaken;
 
     private void Start()
     {
-        _isTaked = false;
+        _isTaken = false;
     }
 
-    public void BeTaken()
+    public void ChangeState()
     {
-        _isTaked = true;
+        _isTaken = true;
     }
 }
