@@ -10,9 +10,7 @@ public class Bot : MonoBehaviour
 
     public bool IsBusy => _isBusy;
     public Box Target => _target;
-
     public BotMover Mover => _mover;
-
 
     public event UnityAction BotIsBack;
 

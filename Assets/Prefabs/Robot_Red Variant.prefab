@@ -382,7 +382,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 64
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!65 &1081841717
 BoxCollider:
@@ -421,7 +421,6 @@ MonoBehaviour:
   _dropForce: 600
   _raycaster: {fileID: 1450413473}
   _boxplace: {fileID: 1216578147}
-  _base: {fileID: 0}
   _bot: {fileID: 1111027337385920731}
 --- !u!114 &1111027337385920731
 MonoBehaviour:

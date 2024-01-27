@@ -13,7 +13,6 @@ public class BotMover : MonoBehaviour
     [SerializeField] private float _dropForce;
     [SerializeField] private Raycaster _raycaster;
     [SerializeField] private Boxplace _boxplace;
-    [SerializeField] private Base _base;
     [SerializeField] private Bot _bot;
 
     private Box _target;
@@ -37,12 +36,11 @@ public class BotMover : MonoBehaviour
 
     private void Update()
     {
-        CheckBoxForward();
+        FindBoxInFront();
     }
 
     private IEnumerator MoveToTarget()
     {
-        Debug.Log("Start");
         _animator.SetBool(Walk, true);
         transform.rotation = Quaternion.LookRotation(transform.position - _target.transform.position);
         _isWalking = true;
@@ -88,7 +86,7 @@ public class BotMover : MonoBehaviour
         _isBoxFound = false;
     }
 
-    private void CheckBoxForward()
+    private void FindBoxInFront()
     {
         RaycastHit hit;
         float distance = 3;
@@ -110,10 +108,38 @@ public class BotMover : MonoBehaviour
         _isWalking = false;
     }
 
+    private IEnumerator MoveToNewTarget(Transform newTargetPosition)
+    {
+        _animator.SetBool(Walk, true);
+        transform.rotation = Quaternion.LookRotation(transform.position - newTargetPosition.transform.position);
+
+        Vector3 newTarget = new Vector3(newTargetPosition.position.x, transform.position.y, newTargetPosition.position.z);
+
+        while (transform.position != newTarget)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, newTarget, _speed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        _animator.SetBool(Walk, false);
+        ResetStartPosotion();
+    }
+
+    private void ResetStartPosotion()
+    {
+        _startPosition = transform.position;
+    }
+
     public void Go()
     {
         _target = _bot.Target;
         Stop();
         StartCoroutine(MoveToTarget());
     }
+
+    public void MoveToNewBase(Transform newBase)
+    {
+        StartCoroutine(MoveToNewTarget(newBase));
+    }
+
 }

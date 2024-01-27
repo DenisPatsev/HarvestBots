@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoxSpawner : MonoBehaviour
 {
-    [SerializeField] private SpawnPoint[] _spawners;
+    [SerializeField] private BoxSpawnPoint[] _spawners;
     [SerializeField] private float _delay;
     [SerializeField] private Box _prefab;
 

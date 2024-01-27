@@ -10,8 +10,6 @@ public class Scanner : MonoBehaviour
 
     private void Update()
     {
-        transform.Rotate(new Vector3(0, _speed * Time.deltaTime, 0));
-
         RaycastHit hit;
 
         if (Physics.Raycast(transform.position, transform.forward, out hit))
@@ -24,5 +22,7 @@ public class Scanner : MonoBehaviour
                 }
             }
         }
+
+        transform.Rotate(new Vector3(0, _speed * Time.deltaTime, 0));
     }
 }

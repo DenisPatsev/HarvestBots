@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
+    [SerializeField] private float _riseSpeed;
 
     private void Update()
     {
@@ -35,6 +36,11 @@ public class CameraMover : MonoBehaviour
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             transform.localEulerAngles += new Vector3(0, -_speed * Time.deltaTime, 0);
+        }
+
+        if (Input.GetAxis("Mouse ScrollWheel") != 0)
+        {
+            transform.Translate(Vector3.up * Input.GetAxis("Mouse ScrollWheel") * -_riseSpeed * Time.deltaTime);
         }
     }
 }
